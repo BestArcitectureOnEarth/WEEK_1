@@ -1,0 +1,21 @@
+{
+  "name": "week_1",
+  "version": "1.0.0",
+  "description": "1. 객체, 클래스, 인스턴스\r 2. 객체지향의 4대 원칙 (OOP) - 캡슐화, 상속, 다형성, 추상화\r 3. this, extends, class 키워드",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BestArcitectureOnEarth/WEEK_1.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BestArcitectureOnEarth/WEEK_1/issues"
+  },
+  "homepage": "https://github.com/BestArcitectureOnEarth/WEEK_1#readme",
+  "type": "module"
+}
