@@ -1,52 +1,78 @@
-// 주체 (Subject) 클래스
-class Subject {
+// 옵저버 실습 과제
+// 옵저버(관찰자)들이 관찰하고 있는 대상자의 상태가 변화가 있을 때마다 대상자는 직접 목록의
+// 각 관찰자들에게 통지하고, 관찰자들은 알림을 받아 조치를 취한다.
+
+// - 일대다 의존성
+// - 분산 이벤트 핸들링 시스템을 구현하는데 사용
+// - 발행/구독 모델로도 불림
+
+class NewsAgency {
   constructor() {
-    this.observers = []; // 옵저버 목록
+    this.news = "";
+    this.observers = [];
   }
 
-  // 옵저버 등록 (구독)
+  // 관찰자 등록
   addObserver(observer) {
     this.observers.push(observer);
   }
 
-  // 옵저버 제거 (구독 해지)
+  // 관찰자 제거
   removeObserver(observer) {
-    this.observers = this.observers.filter((obs) => obs !== observer);
+    const index = this.observers.indexOf(observer);
+    if (index > -1) {
+      this.observers.splice(index, 1);
+    }
   }
 
-  // 상태 변경 시 모든 옵저버에게 알림
-  notify(data) {
-    this.observers.forEach((observer) => observer.update(data));
+  // 관찰자들에게 알림
+  notifyObservers() {
+    for (const observer of this.observers) {
+      observer.update(this.news);
+    }
+  }
+
+  // 뉴스가 변경되면 관찰자들에게 알림
+  setNews(news) {
+    this.news = news;
+    this.notifyObservers();
   }
 }
 
-// 옵저버 (Observer) 클래스
+// 옵저버 인터페이스
 class Observer {
-  constructor(name) {
-    this.name = name;
-  }
+  update(news) {}
+}
 
-  // 업데이트 메서드 (주체가 notify를 호출할 때 실행됨)
-  update(data) {
-    console.log(`${this.name} received update: ${data}`);
+// 옵저버를 상속받은 NewsChannel 클래스
+class NewsChannel1 extends Observer {
+  update(news) {
+    console.log(`News Channel 1: ${news}`);
   }
 }
 
-// 사용 예시
-const newsPublisher = new Subject(); // 뉴스 발행자 생성
+class NewsChannel2 extends Observer {
+  update(news) {
+    console.log(`News Channel 2: ${news}`);
+  }
+}
 
-const subscriber1 = new Observer("Alice"); // 구독자1
-const subscriber2 = new Observer("Bob"); // 구독자2
+// agency 객체
+const agency = new NewsAgency();
 
-newsPublisher.addObserver(subscriber1);
-newsPublisher.addObserver(subscriber2);
+// channel 객체
+const channel1 = new NewsChannel1();
+const channel2 = new NewsChannel2();
 
-// 새로운 뉴스 발행 (옵저버들에게 알림)
-newsPublisher.notify("Breaking News: New JavaScript update!");
+agency.addObserver(channel1);
+agency.addObserver(channel2);
 
-console.log("--Subscriber2 is now not subscribed--");
-// Bob이 구독 해지
-newsPublisher.removeObserver(subscriber2);
+// 새로운 뉴스 발행
+agency.setNews(`Breaking News: Earthquake hits the city`);
 
-// 새로운 뉴스 발행 (Bob은 알림을 받지 않음)
-newsPublisher.notify("Another News: TypeScript is getting popular!");
+agency.removeObserver(channel1);
+
+agency.setNews(`Breaking News: It was fake news`);
+//News Channel 1: Breaking News: Earthquake hits the city
+//News Channel 2: Breaking News: Earthquake hits the city
+//News Channel 2: Breaking News: It was fake news
